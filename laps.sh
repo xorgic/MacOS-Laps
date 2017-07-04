@@ -10,7 +10,7 @@ MACHANISM="GSSAPI"
 PORT="389"
 DAYS=90;
 ADMIN="admin"
-PASSWORDLENGHT=8
+PASSWORDLENGHT=20
 # ---------------------------------------------------------------
 #                     Global Variables
 # ---------------------------------------------------------------
