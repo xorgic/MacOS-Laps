@@ -1,0 +1,23 @@
+#!/bin/bash
+# --------------------------
+# Installation
+# --------------------------
+cp /tmp/laps /usr/local/sbin/
+cp /tmp/com.github.xorgic.macoslaps.plist /Library/LaunchDaemons/
+
+# --------------------------
+# Activation Script
+# --------------------------
+launchctl list | grep com.github.xorgic.macoslaps 2&> /dev/null
+code=$?
+if [[ ${code} -eq 0 ]]; then
+launchctl unload /Library/LaunchDaemons/com.github.xorgic.macoslaps.plist
+launchctl load -w /Library/LaunchDaemons/com.github.xorgic.macoslaps.plist
+else
+launchctl load -w /Library/LaunchDaemons/com.github.xorgic.macoslaps.plist
+fi
+
+# --------------------------
+# Clean up
+# --------------------------
+rm -rf /tmp/laps /tmp/com.github.xorgic.macoslaps.plist
