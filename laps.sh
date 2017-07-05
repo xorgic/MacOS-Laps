@@ -6,7 +6,7 @@
 # ---------------------------------------------------------------
 SERVER="ad.example.com"
 BASEDN="dc=example,dc=com"
-MACHANISM="GSSAPI"
+MECHANISM="GSSAPI"
 PORT="389"
 DAYS=90;
 ADMIN="admin"
@@ -24,7 +24,7 @@ newPassword=$(openssl rand -base64 ${PASSWORDLENGHT})
 # ---------------------------------------------------------------
 function replace_attributes ()
 {
-    /usr/bin/ldapmodify -p ${PORT} -h ${SERVER} -Y ${MACHANISM} <<EOF
+    /usr/bin/ldapmodify -p ${PORT} -h ${SERVER} -Y ${MECHANISM} <<EOF
 dn: $1
 changetype: modify
 replace: ms-Mcs-AdmPwdExpirationTime
@@ -37,7 +37,7 @@ EOF
 
 function add_attributes ()
 {
-    /usr/bin/ldapmodify -p ${PORT} -h ${SERVER} -Y ${MACHANISM} <<EOF
+    /usr/bin/ldapmodify -p ${PORT} -h ${SERVER} -Y ${MECHANISM} <<EOF
 dn: $1
 changetype: modify
 add: ms-Mcs-AdmPwdExpirationTime
@@ -61,7 +61,7 @@ function reset_password ()
 # Set out internal field separator to break on newlines
 IFS=$'\n';
 # Query Active Directory for our machine and store dn and ms-Mcs-AdmPwdExpirationTime in an array
-ldap_result=($(/usr/bin/ldapsearch -LLL -p ${PORT} -h ${SERVER} -Y ${MACHANISM} -b ${BASEDN} "(&(&(objectCategory=Computer)(sAMAccountName=${HOSTNAME}$)))" dn ms-Mcs-AdmPwdExpirationTime 2>/dev/null | /usr/bin/perl -p00e 's/\r?\n //g' | /usr/bin/awk -F ": " '($1 == "dn" || $1 == "ms-Mcs-AdmPwdExpirationTime") {print $2}'));
+ldap_result=($(/usr/bin/ldapsearch -LLL -p ${PORT} -h ${SERVER} -Y ${MECHANISM} -b ${BASEDN} "(&(&(objectCategory=Computer)(sAMAccountName=${HOSTNAME}$)))" dn ms-Mcs-AdmPwdExpirationTime 2>/dev/null | /usr/bin/perl -p00e 's/\r?\n //g' | /usr/bin/awk -F ": " '($1 == "dn" || $1 == "ms-Mcs-AdmPwdExpirationTime") {print $2}'));
 
 # Check if ms-Mcs-AdmPwdExpirationTime is defined
 # if not add both ms-Mcs-AdmPwdExpirationTime and ms-Mcs-AdmPwd attributes and
